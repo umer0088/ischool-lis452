@@ -5,18 +5,18 @@
 
 def main():
     """Interactive converter of temperatures."""
-    times_to_loop = False
-    while times_to_loop == False:
+    while how_many_temps == False:
         try:
-            times_to_loop = int(input("How many temperatures do you want to convert?"))
+            how_many_temps = int(input("How many temperatures do you want to convert?"))
         except ValueError:
-            print("Retry, by entering an integer number.")
-            times_to_loop = False
+            how_many_temps = False
 
-    for i in range(times_to_loop):
+    for i in range(how_many_temps):
         celsius = int(input("What is the Celsius temperature? "))
         fahrenheit = 9/5 * celsius + 32
         print("The temperature is", fahrenheit, "degrees Fahrenheit.")
+
+    # This is just an extra comment I've added
 
 main()
 
