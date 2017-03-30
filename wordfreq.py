@@ -1,5 +1,4 @@
 # wordfreq.py
-#
 # Based on John Zelle's example from PPICS 2nd ed. Page 375.
 #
 # Slightly modified by J. Weible
@@ -17,7 +16,7 @@ def main():
     fname = input("File to analyze: ")
     text = open(fname,'r').read()
     text = text.lower()
-    for ch in '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~':
+    for ch in '!"#$%&()\'*+,-./:;<=>?@[\\]^_`{|}~':
         text = text.replace(ch, ' ')
     words = text.split()
 
