@@ -10,11 +10,11 @@ limit = int(input('How many records do you want (max)?'))
 url = 'http://www.sailboatlistings.com/cgi-bin/saildata/db.cgi'
 # state = 'Michigan'
 kv_pairs = {'db': 'default', 'sbltable': 1,
-        'mh': limit, 'uid': 'default',
-        'view_records': 1,'sb': 5,
-        'so': 'descend', 'nh':1,
-        'state': state}
-state_page = requests.get(url, kv_pairs)
+            'uid': 'default', 'view_records': 1,'sb': 5,
+            'so': 'descend', 'nh':1,
+            'mh': limit, 'state': state}
+state_page = requests.get(url, kv_pairs)  # Fetch the web page
+
 print('Complete URL requested was:', state_page.url)
 print('Response Headers were:\n', state_page.headers)
 

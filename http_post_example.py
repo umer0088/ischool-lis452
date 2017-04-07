@@ -7,6 +7,10 @@ import requests
 url = 'https://startpage.com/'
 
 r = requests.get(url)
+
+# data = {}
+# r = requests.post(url, data)
+
 if not r.ok:
     print('Had an error')
     exit()
