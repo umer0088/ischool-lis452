@@ -2,7 +2,7 @@ import requests
 import re
 
 state = input('Enter the name of a state (e.g. Michigan) to search:')
-limit = int(input('How many records do you want (max)?'))
+limit = int(input('How many records do you want maximum. Expects 100, 200, etc.?'))
 
 # Simple url = 'http://www.sailboatlistings.com/location/Michigan'
 
