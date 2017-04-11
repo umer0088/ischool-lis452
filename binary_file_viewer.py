@@ -36,12 +36,28 @@ print("File contains:")
 # Loop through the data and display the binary content by converting each byte
 # into a hexadecimal number:
 
+chars = ''  # string to show the printable characters found
+
 for i in range(len(data)):
-    # start a new line every 32 bytes and show the file position:
+    # start a new line every 32 bytes:
     if (i % 32) == 0:
+        # print out the viewable characters from previous data line:
+        if chars:
+            print(chars, end='')
+            chars = ''  # reset chars to empty string
+
+        # now print the file position counter
         print('\n{:06x}: '.format(start_pos + i), end='')
 
     # print one byte as a 2-digit hex number, a space, and stay on the line:
     print('{:02x} '.format(data[i]), end='')
+
+    # Also try converting that byte into a printable character (note, this
+    # byte-at-time approach doesn't work for Unicode multi-byte characters)
+    c = chr(data[i])
+    if c.isprintable():
+        chars += c + ' '
+    else:
+        chars += '  '
 
 print('\nDone.')
