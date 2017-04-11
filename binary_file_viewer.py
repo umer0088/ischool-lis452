@@ -41,7 +41,7 @@ for i in range(len(data)):
     if (i % 20) == 0:
         print()
 
-    # print one byte as a hex number, a space, and stay on the line:
-    print(hex(data[i])[2:4], ' ', sep='', end='')
+    # print one byte as a 2-digit hex number, a space, and stay on the line:
+    print('{:02x} '.format(data[i]), end='')
 
 print('\nDone.')
