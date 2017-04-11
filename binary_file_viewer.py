@@ -37,9 +37,9 @@ print("File contains:")
 # into a hexadecimal number:
 
 for i in range(len(data)):
-    # start a new line every 20 bytes
-    if (i % 20) == 0:
-        print()
+    # start a new line every 32 bytes and show the file position:
+    if (i % 32) == 0:
+        print('\n{:06x}: '.format(start_pos + i), end='')
 
     # print one byte as a 2-digit hex number, a space, and stay on the line:
     print('{:02x} '.format(data[i]), end='')
