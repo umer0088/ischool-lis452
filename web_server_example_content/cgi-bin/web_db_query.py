@@ -16,14 +16,13 @@ def main():
     xhtml_start()
 
     data = get_http_query_string()
-    print('data is\n', data)
-
     if not data:
         data = {'search_field': 'Title',
                 'search_text': '%Monty Python%'}
+    xhtml_search_form(data)
+
     search_IMDB(data)
 
-    xhtml_search_form()
     xhtml_end()
     return
 
@@ -57,7 +56,7 @@ def search_IMDB(search: dict):
         print('<h1>Title search for', value, '</h1>')
         query = "select Title, ReleaseYear from production " + \
                 "where Title like %s and isMovie = True"
-    elif 'LastName' in search['search_field']:
+    elif search['search_field'] == 'LastName':
         value = search['search_text']
         print('<h1>Actor or Director search for lastname of', value, '</h1>')
         query = "select FirstName, LastName from person " + \
@@ -68,8 +67,8 @@ def search_IMDB(search: dict):
 
     # Execute the SQL query
     params = [value]  # put value(s) in a list
-    print('<p>Query is <code>', query, '</code><br />' +
-          'and parameters are<code>', params, '</code></p>')
+    # print('<p>Query is <code>', query, '</code><br />' +
+    #       'and parameters are<code>', params, '</code></p>')
     cursor.execute(query, params)
 
     # Fetch all the rows into a tuple of tuples:
@@ -104,7 +103,6 @@ def display_results(results: list):
 def get_http_query_string() -> dict:
     """Looks for key=value pair(s) on the URL (from the search form) """
     query_data = cgi.FieldStorage()
-    print('query_data is\n', query_data)
 
     data = {}
     for key in ['search_field', 'search_text']:
@@ -133,20 +131,35 @@ def xhtml_start():
     """)
     return
 
-def xhtml_search_form():
-    """Prints out a simple search form that re-submits to this same page."""
+def xhtml_search_form(data: dict):
+    """Prints out a simple search form that re-submits to this same page.
+    :param data lets the form input fields default to the previous settings."""
     print("""
     <form action="web_db_query.py" method="get">
         <div>
-        <h2>Search again:</h2>
-        <select name="search_field">
-            <option>Title</option>
-            <option>Actor or Director LastName</option>
+        <h2>Search:</h2>
+        <select name="search_field">""")
+
+    # Print out the <option> tags.  The conditional is to automatically select
+    #  the same option that was used in the last search.
+
+    if data['search_field'] == 'Title':
+        print("""
+            <option value='Title' selected='selected'>Title</option>
+            <option value='LastName'>Actor or Director LastName</option>""")
+    elif data['search_field'] == 'LastName':
+        print("""
+            <option value='Title'>Title</option>
+            <option value='LastName' selected='selected'>Actor or Director LastName</option>""")
+
+    print("""
         </select>
         <br />
-        Enter the text to search for. (Use % for wildcard)
-        <input name="search_text" type="text" size="60" />
-        <input type="submit" />
+        Enter the text to search for. (Use % for wildcard)""")
+
+    print('<input name="search_text" type="text" size="60" value="{}"/>'.format(data['search_text']))
+    print("""
+            <input type="submit" />
         </div>
     </form>""")
     return
