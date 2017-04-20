@@ -37,8 +37,18 @@ while f.tell() < end_of_file_position:
     # Get the first result from tuple (there should be only one value in this case)
     record_length = unpack('<H', f.read(2))[0]
 
-    print('record', record_count, 'has', record_length, 'values, or', record_length * bytes_per_value, 'bytes.')
-    f.seek(2 + record_length * bytes_per_value, io.SEEK_CUR)  # Scan forward to start of next record
+    type_and_sensor = unpack('B', f.read(1))[0]
+    if type_and_sensor > 127:
+        record_type = 'prod'
+        sensor = type_and_sensor - 128
+    else:
+        record_type = 'test'
+        sensor = type_and_sensor
+
+    print('record', record_count, 'has', record_length, 'values, or', record_length * bytes_per_value,
+          'bytes, type', record_type, 'from sensor', sensor)
+
+    f.seek(1 + record_length * bytes_per_value, io.SEEK_CUR)  # Scan forward to start of next record
 
 f.close()
 print('Done processing.')
