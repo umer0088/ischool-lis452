@@ -10,12 +10,17 @@
 #  http://mysql-python.sourceforge.net/MySQLdb.html
 import pymysql
 from os import environ
-
+import cgi
 
 def main():
     xhtml_start()
 
-    data = {'Title': '%Monty Python%'}
+    data = get_http_query_string()
+    print('data is\n', data)
+
+    if not data:
+        data = {'search_field': 'Title',
+                'search_text': '%Monty Python%'}
     search_IMDB(data)
 
     xhtml_search_form()
@@ -23,7 +28,7 @@ def main():
     return
 
 
-def search_IMDB(search_terms: dict):
+def search_IMDB(search: dict):
     """Connect to MySQL IMDB database,
     search for the term(s) specified,
     output results, and disconnect."""
@@ -47,17 +52,22 @@ def search_IMDB(search_terms: dict):
     # query results, this option returns a list of dictionaries
     cursor = db.cursor(pymysql.cursors.DictCursor)
 
-    if 'Title' in search_terms.keys():
-        value = search_terms['Title']
+    if search['search_field'] == 'Title':
+        value = search['search_text']
         print('<h1>Title search for', value, '</h1>')
         query = "select Title, ReleaseYear from production " + \
                 "where Title like %s and isMovie = True"
-        params = [value]  # put value(s) in a list
+    elif 'LastName' in search['search_field']:
+        value = search['search_text']
+        print('<h1>Actor or Director search for lastname of', value, '</h1>')
+        query = "select FirstName, LastName from person " + \
+                "where LastName like %s"
     else:
         print('<p>Search data missing or not understood.</p>')
         return
 
-    # Execute the SQL command
+    # Execute the SQL query
+    params = [value]  # put value(s) in a list
     print('<p>Query is <code>', query, '</code><br />' +
           'and parameters are<code>', params, '</code></p>')
     cursor.execute(query, params)
@@ -91,6 +101,17 @@ def display_results(results: list):
     print('</table>')  # close html table
     return
 
+def get_http_query_string() -> dict:
+    """Looks for key=value pair(s) on the URL (from the search form) """
+    query_data = cgi.FieldStorage()
+    print('query_data is\n', query_data)
+
+    data = {}
+    for key in ['search_field', 'search_text']:
+        if key in query_data.keys():
+            data[key] = query_data[key].value
+    return data
+
 
 def xhtml_start():
     """Prints response header and other necessary XHTML document stuff."""
@@ -120,7 +141,7 @@ def xhtml_search_form():
         <h2>Search again:</h2>
         <select name="search_field">
             <option>Title</option>
-            <option>Actor LastName</option>
+            <option>Actor or Director LastName</option>
         </select>
         <br />
         Enter the text to search for. (Use % for wildcard)
