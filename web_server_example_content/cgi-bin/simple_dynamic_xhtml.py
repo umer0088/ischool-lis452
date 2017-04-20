@@ -19,7 +19,7 @@
 print("Content-Type: text/html")  # HTML is following
 print()  # blank line, end of headers
 
-# This is a valid heading for HTML version 4.01
+
 print("""
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
