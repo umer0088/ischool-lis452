@@ -18,6 +18,7 @@ def main():
     data = {'Title': '%Monty Python%'}
     search_IMDB(data)
 
+    xhtml_search_form()
     xhtml_end()
     return
 
@@ -48,7 +49,7 @@ def search_IMDB(search_terms: dict):
 
     if 'Title' in search_terms.keys():
         value = search_terms['Title']
-        print('<p>Title search for', value, '</p>')
+        print('<h1>Title search for', value, '</h1>')
         query = "select Title, ReleaseYear from production " + \
                 "where Title like %s and isMovie = True"
         params = [value]  # put value(s) in a list
@@ -63,10 +64,31 @@ def search_IMDB(search_terms: dict):
 
     # Fetch all the rows into a tuple of tuples:
     results = cursor.fetchall()
-    for row in results:
-        print('<p>', row["Title"], '</p>')
 
-    db.close()  # disconnect from server
+    display_results(results)
+
+    db.close()  # disconnect from database server
+    return
+
+
+def display_results(results: list):
+    """Given a list of data rows (as dictionaries), display the results in XHTML format."""
+    if not results:
+        print('<p>No matching results found.</p>')
+        return
+    print('<table style="border: 2px;">')  # start html table
+    print('\t<tr>')  # start html table row
+    keys_sorted = sorted(results[0].keys())
+    for key in keys_sorted:
+        print('\t\t<th>' + key + '</th>')  # show column name in table header cell
+    print('\t</tr>')  # close the html table row
+
+    for row in results:
+        print('\t<tr>')
+        for key in keys_sorted:
+            print('\t\t<td>', row[key], '</td>', sep='')  # show value in table data cell
+        print('\t</tr>')
+    print('</table>')  # close html table
     return
 
 
@@ -84,11 +106,29 @@ def xhtml_start():
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>A simple IMDB database search</title>
+        <link rel="stylesheet" type="text/css" href="/simple.css" />
     </head>
     <body>
     """)
     return
 
+def xhtml_search_form():
+    """Prints out a simple search form that re-submits to this same page."""
+    print("""
+    <form action="web_db_query.py" method="get">
+        <div>
+        <h2>Search again:</h2>
+        <select name="search_field">
+            <option>Title</option>
+            <option>Actor LastName</option>
+        </select>
+        <br />
+        Enter the text to search for. (Use % for wildcard)
+        <input name="search_text" type="text" size="60" />
+        <input type="submit" />
+        </div>
+    </form>""")
+    return
 
 def xhtml_end():
     print('</body>\n</html>')
