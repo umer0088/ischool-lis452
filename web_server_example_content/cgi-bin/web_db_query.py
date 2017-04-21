@@ -53,12 +53,12 @@ def search_IMDB(search: dict):
 
     if search['search_field'] == 'Title':
         value = search['search_text']
-        print('<h1>Title search for', value, '</h1>')
+        print('<h1>Movie Title search for', value, '</h1>')
         query = "select Title, ReleaseYear from production " + \
                 "where Title like %s and isMovie = True"
     elif search['search_field'] == 'LastName':
         value = search['search_text']
-        print('<h1>Actor or Director search for lastname of', value, '</h1>')
+        print('<h1>Actor or Director search for LastName of', value, '</h1>')
         query = "select FirstName, LastName from person " + \
                 "where LastName like %s"
     else:
@@ -131,6 +131,7 @@ def xhtml_start():
     """)
     return
 
+
 def xhtml_search_form(data: dict):
     """Prints out a simple search form that re-submits to this same page.
     :param data lets the form input fields default to the previous settings."""
@@ -145,7 +146,7 @@ def xhtml_search_form(data: dict):
 
     if data['search_field'] == 'Title':
         print("""
-            <option value='Title' selected='selected'>Title</option>
+            <option value='Title' selected='selected'>Movie Title</option>
             <option value='LastName'>Actor or Director LastName</option>""")
     elif data['search_field'] == 'LastName':
         print("""
@@ -163,6 +164,7 @@ def xhtml_search_form(data: dict):
         </div>
     </form>""")
     return
+
 
 def xhtml_end():
     print('</body>\n</html>')
